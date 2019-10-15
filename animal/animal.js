@@ -39,6 +39,7 @@ const animalNotFound = (req, res, next) => {
     })
 }
 
+    
 const generateFailSpread = (req, res, next) => {
     let floor = req.params.floor
     let  ceil = req.params.ceil
@@ -47,17 +48,30 @@ if(isNaN(floor) || isNaN(ceil)){
         status: "failed",
         message: "please enter a number"
     })
+   
+}else{
     next()
 }
+
 }
 
 const generateRandomSpread = (req, res, next) => {
+    let floor = req.params.floor
+    let  ceil = req.params.ceil
+    let random = Math.floor(Math.random() * ceil - floor + 1)
 
+ if(floor < ceil){
+        res.json({
+            status: successful,
+            message: "Your random number is" + random
+       
+    })
+}
 }
 
 app.get('/animal/:animal',  getAnimal, animalNotFound)
 
-app.get('/random', generateFailSpread)
+app.get('/random', generateFailSpread, generateRandomSpread)
 
 app.listen(port, () => {
     console.log("running")
