@@ -41,8 +41,8 @@ const animalNotFound = (req, res, next) => {
 
     
 const generateFailSpread = (req, res, next) => {
-    let floor = req.query.floor
-    let  ceil = req.query.ceil
+    let floor = parseInt(req.query.floor)
+    let  ceil = parseInt(req.query.ceil)
 if(isNaN(floor) || isNaN(ceil)){
     res.json({
         status: "failed",
@@ -54,10 +54,23 @@ if(isNaN(floor) || isNaN(ceil)){
 }
 
 }
+const floor_ceil_checker = (req, res, next) => {
+    let floor = parseInt(req.query.floor)
+    let  ceil = parseInt(req.query.ceil)
+
+    if(floor > ceil) {
+        res.json ({
+            status: "failed",
+            message: "First number has to be smaller than last"
+        })
+    }else{
+        next()
+    }
+}
 
 const generateRandomSpread = (req, res, next) => {
-    let floor = req.query.floor
-    let  ceil = req.query.ceil
+    let floor = parseInt(req.query.floor)
+    let  ceil = parseInt(req.query.ceil)
     let random = Math.floor(Math.random() * ceil - floor + 1)
 
  if(floor < ceil){
@@ -71,7 +84,7 @@ const generateRandomSpread = (req, res, next) => {
 
 app.get('/animal/:animal',  getAnimal, animalNotFound)
 
-app.get('/random', generateFailSpread, generateRandomSpread)
+app.get('/random', generateFailSpread, floor_ceil_checker, generateRandomSpread)
 
 app.listen(port, () => {
     console.log("running")
